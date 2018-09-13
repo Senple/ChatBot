@@ -1,0 +1,79 @@
+#display-mode{
+  style="width:360px;
+  height: 500px;
+  border: 1px solid #333333;
+  z-index:10;
+  position: absolute;
+}
+
+
+/* headerのcss */
+#header{
+   height:124px;
+   width:100%;
+}
+
+.title-word{
+    width:70%;
+    height:78px;
+    padding-top: 14px;
+    /* padding-bottom: 24px; */
+    margin-top: 24px;
+    margin-bottom: 24px;
+    display:inline-block;
+    text-align: center;
+    font-size: 50px;
+    font-weight: 700;
+}
+
+.minus-close-button{
+   style="display:inline-block;
+   width: 30%;
+   float: right;
+   text-align: center;
+   font-size: 245%;
+}
+
+
+/* mainのcss */
+#main{
+    background-color:gray;
+    height:350px;
+    z-index:150;
+}
+
+#chat_area{
+  overflow:auto;
+  border:solid;
+  width:374px;
+  height:350px;
+  margin-left: 0px;
+  margin-right: 0px;
+  vertical-align:bottom;
+  background-color: #DDDDDD;
+  z-index :1;
+}
+
+
+/* footerのcss */
+#footer{
+  height:24px;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.post_space{
+  width:85%;
+  display:inline-block;
+  align-items:center;
+  padding: 0px;
+}
+
+.submit_button{
+  width:15%;
+  display:inline-block;
+  float:right;
+  padding:0px;
+}

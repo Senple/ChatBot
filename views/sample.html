@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+     <meta charset="UTF-8">
+     <title>チャットルーム</title>
+      <!-- Latest compiled and minified CSS -->
+     <link rel="stylesheet" href="/static/bootstrap.min.css" />
+      <!-- Optional theme -->
+     <link rel="stylesheet" href="/static/bootstrap-theme.min.css" />
+      <!-- Latest compiled and minified JavaScript -->
+     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+     <script src="static/jquery.min.js"></script>
+     <script src="static/bootstrap.min.js"></script>
+
+
+     <link rel="stylesheet" href="/static/hidden_mode.css" />
+     <!-- hidden_modeのstyleを外部に移行してみた  -->
+     <link rel="stylesheet" href="/static/display_mode.css" />
+   </head>
+
+ <body>
+    <div id="Hidden-mode" draggable="true">
+        <i class="fas fa-user-alt fa-10x" style="cursor: pointer;" onclick="hyouji1(0)"></i>
+        <p class="arrow_box" >こまっているなら相談乗るよ！</p>
+      </div>
+
+    <div id="display-mode">
+        <div id="header">
+           <h2 class="title-word">ChatBot</h2>
+           <h2 class="minus-close-button"><i class="fas fa-minus" style="cursor: pointer;" onclick="hyouji1(1)"></i></h2>
+         </div>
+
+        <div id="main">
+           <div id="chat_area" class="chat_area row col-md-12">
+            </div>
+         </div>
+
+        <div id="footer" class="row col-md-12">
+          <form method="POST" action="#" id="talkForm">
+             <input type="text" name="chat_word" class="post_space" required/>
+             <input type="submit" value="送信" class="submit_button" />
+            </form>
+         </div>
+       </div>
+      <script type="text/javascript">
+       // hyouji1()はUI上のバツを押すと最小化し、アイコンをタップすると表示されるもの
+       document.getElementById("display-mode").style.display="none";
+       function hyouji1(num){
+         if (num == 0){
+           document.getElementById("Hidden-mode").style.display="none";
+           document.getElementById("display-mode").style.display="block";
+           num = 1;
+         }
+         else{
+           document.getElementById("Hidden-mode").style.display="block";
+           document.getElementById("display-mode").style.display="none";
+         }
+       }
+
+       // ページ表示時に発言データを取得・表示する
+          $("#chat_area").ready(function(){
+              //getToData();
+              var chatArea = $("#chat_area")
+              // 発言の外側のDIV要素
+              var rowDiv = $("<div></div>", {"class": "row"})
+              // 発言の内側のDIV要素
+              // ユーザー側のdiv
+                var talkContent = $("<div></div>", {
+                    "class": "talk alert alert-success pull-left col-md-5",
+                    "style": "word-wrap: break-word",
+                    "text" : "何か文字を入力してね",
+                  })
+                // 内側のDIVを外側のDIVに追加
+                rowDiv.append(talkContent);
+                chatArea.append(rowDiv);
+          });
+
+          $("#talkForm").on("submit", function(event){
+             // 本来のformのsubmitを防止
+             event.preventDefault();
+             getToData();
+             //saveTalkData();
+           });
+
+           function getToData(){
+             var input = $("input[name='chat_word']").val();
+             $.ajax({
+               type: "POST",
+               url: "/api/talk",
+               data:{
+                 "chat_word": input
+               },
+               dataType: "json"
+             }).done(function(data){
+                 // JSONを受け取り各発言のDOMを構築する
+                // console.log(data);
+                // console.log("getしたよ");
+                // console.log(data["new_data"]);
+                appendTalkNode(data["talk_time"], /*data["content"],*/ data["new_data"], input);
+             }).fail(function(data){
+                 console.error(data);
+             });
+           }
+
+           // 発言データのDOMを追加する
+          function appendTalkNode(talkTime, /*content,*/ newData, input){
+              // チャット表示領域
+              var chatArea = $("#chat_area")
+              // 発言の外側のDIV要素
+              var rowDiv = $("<div></div>", {"class": "row"})
+              // 発言の内側のDIV要素
+              // ユーザー側のdiv
+                var talkContent = $("<div></div>", {
+                    "class": "talk alert alert-info pull-right col-md-5",
+                    "style": "word-wrap: break-word",
+                    "title": talkTime,
+                    "text" : input,
+                  })
+                // 内側のDIVを外側のDIVに追加
+                rowDiv.append(talkContent);
+              /*if (newData == "null"){
+                var talkContent = $("<div></div>", {
+                    "class": "talk alert alert-info pull-right col-md-5",
+                    "style": "word-wrap: break-word",
+                    "title": talkTime,
+                    "text" : input,
+                  })
+                // 内側のDIVを外側のDIVに追加
+                rowDiv.append(talkContent);
+              }else{*/
+                // ボット側のdiv
+                var talkData = $("<div></div>", {
+                   "class": "talk alert alert-success pull-left col-md-5",
+                   "style": "word-wrap: break-word",
+                   "title": talkTime,
+                   "text" : newData,
+                })
+                // 内側のDIVを外側のDIVに追加
+                rowDiv.append(talkData);
+                //rowDiv.append(talkData);
+              //}
+
+               // チャット表示領域に外側のDIVを追加
+              chatArea.append(rowDiv);
+               // 追加した発言の位置へスクロール
+              chatScrollBottom();
+          }
+
+           function chatScrollBottom(){
+              // 最下部へのスクロール
+              $('#chat_area').animate({scrollTop: $('#chat_area')[0].scrollHeight}, 0);
+           }
+
+       </script>
+  </body>
+</html>
