@@ -6,8 +6,6 @@ from datetime import datetime
 from bottle import route, run, template, request, response, redirect, static_file
 
 
-start_check = "START"
-
 @route("/")
 def sample():
     return redirect("/chat_room")
@@ -19,10 +17,6 @@ def chat_room():
     :return:
     チャットの記載例を載せる。
     """
-    global start_check
-    start_check = "TRUE"
-    # print("HELLO WORLD!")
-
     return template("sample")
 
 
@@ -35,34 +29,6 @@ def static(file_path):
     :return:
     """
     return static_file(file_path, root="./static")
-
-
-
-def talk(request_content ="null"):
-    """
-    発言を登録し、チャットルームへリダイレクトします
-    :return:
-    """
-    global start_check
-    #時間を取得
-    tdatetime = datetime.now()
-    now_time = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-
-    if start_check == "TRUE":
-        content="null"
-        new_data = "何か文字を入力してね"
-        start_check = "FALSE"
-        # print("talk()の中身は…")
-        # print(now_time,content,new_data)
-
-
-    else:
-        # マルチバイトデータのためgetではなくgetunicodeにする
-        content = request_content
-        new_data = "null"
-        print(now_time,content,new_data)
-
-    return now_time,content,new_data
 
 
 def greet():
@@ -81,7 +47,7 @@ def greet():
         return greet_list[4]
 
 
-@route("/api/talk", method=["GET", "POST"])
+@route("/api/talk", method="POST")
 def talk_api():
     """
     発言一覧を管理するAPI
@@ -90,68 +56,21 @@ def talk_api():
 
      :return:
     """
-    if request.forms.getunicode("chat_word") == None:
-        talk_list = talk()
-        return json.dumps({
-        "talk_time":talk_list[0],
-        "content":talk_list[1],
-        "new_data":talk_list[2],
-        })
-
+    content = request.forms.getunicode("chat_word")
+    now = datetime.now()
+    now_time = now.strftime('%Y-%m-%d %H:%M:%S') 
+    greeting_list = ["おはよう","こんにちは","こんにちわ","Hi","hi","こんばんは","こんばんわ"]
+    if content in greeting_list:
+        new_data = greet()
+    elif content == "削除":
+        new_data = "やめてくりー"
     else:
-        talk_list = []
-        content = request.forms.getunicode("chat_word")
-        tdatetime = datetime.now()
-        now_time = tdatetime.strftime('%Y-%m-%d %H:%M:%S') + "%08d" % (tdatetime.microsecond // 1000)
-        print(tdatetime)
+        new_data = "その言葉はまだわかんないんだ！ ごめんねm(__)m"
 
-        greeting_list = ["おはよう","こんにちは","こんにちわ","Hi","hi","こんばんは","こんばんわ"]
-
-        if content in greeting_list:
-            new_data = greet()
-        elif content == "削除":
-            new_data = "やめてくりー"
-        else:
-            new_data = "その言葉はまだわかんないんだ！ ごめんねm(__)m"
-
-        save_talk(now_time, content, new_data)
-        return json.dumps({
-        "talk_time": now_time,
-        #"content": content,
-        "new_data":new_data,
-        })
-
-"""
-    if request.method == "GET":
-        content = request.query.getunicode("chat_word")
-        talk_list = talk(content)
-        return json.dumps({
-        "talk_time":talk_list[0],
-        "content":talk_list[1],
-        "new_data":talk_list[2],
-        })
-
-    elif request.method == "POST":
-        talk_list = []
-        content = request.forms.getunicode("chat_word")
-        tdatetime = datetime.now()
-        now_time = tdatetime.strftime('%Y-%m-%d %H:%M:%S')
-        greeting_list = ["おはよう","こんにちは","こんにちわ","Hi","hi","こんばんは","こんばんわ"]
-
-        if content in greeting_list:
-            new_data = greet()
-        elif content == "削除":
-            new_data = "やめてくりー"
-        else:
-            new_data = "その言葉はまだわかんないんだ！ ごめんねm(__)m"
-
-        save_talk(now_time, content, new_data)
-        return json.dumps({
-        "talk_time": now_time,
-        #"content": content,
-        "new_data":new_data,
-        })
-"""
+    save_talk(now_time, content, new_data)
+    return json.dumps({
+    "new_data":new_data,
+    })
 
 def save_talk(talk_time, content, new_data):
     """
