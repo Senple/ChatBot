@@ -104,6 +104,7 @@
              },
              dataType: "json"
            }).done(function(data){
+             console.log(data);
 
                // JSONを受け取り各発言のDOMを構築する
               ReplyTalkNode(data["new_data"], input);
