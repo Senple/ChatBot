@@ -87,26 +87,7 @@ def talk_api():
     発言一覧を管理するAPI
      GET -> 発言一覧を戻す
     POST -> 発言を保存する
-     json eg.
-     [
-        {
-            talk_time:2016-09-17 15:00:49.937402
-            username:sayamada
-            content:おはよう
-        }
-    :
-        },
-        {
-            talk_time:2016-09-17 15:58:03.200027
-            username:sayamada
-            content:こんにちは
-        },
-        {
-            talk_time:2016-09-17 15:58:12.289631
-            username:sayamada
-            content:元気ですか？
-        }
-     ]
+
      :return:
     """
     if request.forms.getunicode("chat_word") == None:
