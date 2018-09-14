@@ -34,7 +34,7 @@ def talk_api():
     """
     発言一覧を管理するAPI
     POST : 発言を保存する
-    new_dataが返答を示す。
+    new_dataが返答を示す
     :return:
     """
     content = request.forms.getunicode("chat_word")
