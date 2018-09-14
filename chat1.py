@@ -13,8 +13,6 @@ def sample():
 @route("/chat_room")
 def chat_room():
     """
-    チャットを行う画面
-    :return:
     チャットの記載例を載せる。
     """
     return template("sample")
@@ -31,6 +29,30 @@ def static(file_path):
     return static_file(file_path, root="./static")
 
 
+@route("/api/talk", method="POST")
+def talk_api():
+    """
+    発言一覧を管理するAPI
+    POST : 発言を保存する
+    new_dataが返答を示す。
+    :return:
+    """
+    content = request.forms.getunicode("chat_word")
+    now = datetime.now()
+    now_time = now.strftime('%Y-%m-%d %H:%M:%S')
+    greeting_list = ["おはよう","こんにちは","こんにちわ","Hi","hi","こんばんは","こんばんわ"]
+    if content in greeting_list:
+        new_data = greet()
+    elif content == "削除":
+        new_data = "やめてくりー"
+    else:
+        new_data = "その言葉はまだわかんないんだ！ ごめんねm(__)m"
+
+    save_talk(now_time, content, new_data)
+    return json.dumps({
+    "new_data":new_data,
+    })
+
 def greet():
     now = datetime.now()
     greet_list = ["もしかして…夜明け待ちですか","おはよう","こんにちは","こんばんは","夜更かしはだめですよ~"]
@@ -46,38 +68,13 @@ def greet():
     else:
         return greet_list[4]
 
-
-@route("/api/talk", method="POST")
-def talk_api():
-    """
-    発言一覧を管理するAPI
-     GET -> 発言一覧を戻す
-    POST -> 発言を保存する
-
-     :return:
-    """
-    content = request.forms.getunicode("chat_word")
-    now = datetime.now()
-    now_time = now.strftime('%Y-%m-%d %H:%M:%S') 
-    greeting_list = ["おはよう","こんにちは","こんにちわ","Hi","hi","こんばんは","こんばんわ"]
-    if content in greeting_list:
-        new_data = greet()
-    elif content == "削除":
-        new_data = "やめてくりー"
-    else:
-        new_data = "その言葉はまだわかんないんだ！ ごめんねm(__)m"
-
-    save_talk(now_time, content, new_data)
-    return json.dumps({
-    "new_data":new_data,
-    })
-
 def save_talk(talk_time, content, new_data):
     """
     チャットデータを永続化する関数
     CSVとしてチャットの内容を書き込んでいる
 
     :param talk_time:
+    :param user:
     :param content:
     :return:
     """
