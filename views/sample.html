@@ -35,7 +35,7 @@
          </div>
 
         <div id="footer" class="row col-md-12">
-          <form method="POST" action="#" id="talkForm">
+          <form name="submit_text"method="POST" action="#" id="talkForm">
              <input type="text" name="chat_word" class="post_space" required/>
              <input type="submit" value="送信" class="submit_button" />
             </form>
@@ -55,6 +55,7 @@
          document.getElementById("display-mode").style.display="none";
        }
      }
+
 
      // ページ表示時に発言データを取得・表示する
         $("#chat_area").ready(function(){
@@ -93,6 +94,7 @@
              rowDiv.append(talkContent);
              chatArea.append(rowDiv);
            getToData(input);
+           clr()
          });
 
          function getToData(input){
@@ -138,6 +140,12 @@
          function chatScrollBottom(){
             // 最下部へのスクロール
             $('#chat_area').animate({scrollTop: $('#chat_area')[0].scrollHeight}, 0);
+         }
+
+         // 送信後はchat_wordを開放する
+         function clr(){
+           document.submit_text.chat_word.value="";
+           console.log("送信しました。");
          }
      </script>
   </body>
