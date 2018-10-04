@@ -27,14 +27,14 @@
 
 .minus-close-button{
   width:30%;
-  height:78px;
+  height:124px;
   display:inline-block;
   float:right;
   text-align:center;
-  font-size:245%;
-  padding-top: 14px;
-  margin-top: 24px;
-  margin-bottom: 24px;
+  font-size:53px;
+  padding-top: 34px;
+  padding-bottom: 24px;
+  border-left:solid;
 }
 
 
@@ -50,19 +50,12 @@
   border:solid;
   width:358px;
   height:350px;
-  /* padding-left: 0px; */
-  /* padding-right:0px; */
   margin-left: 0px;
   margin-right: 0px;
   vertical-align:bottom;
   background-color: #DDDDDD;
   z-index :1;
 }
-
-/* .pull-right{
-  margin: 0px;
-
-} */
 
 
 /* footerのcss */
