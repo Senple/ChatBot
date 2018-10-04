@@ -52,7 +52,7 @@ def talk_api():
     #クエリの内容を形態素解析する。
     word_dict=parse(content)
     # print(word_dict["all"])
-    print("word_dict：")
+    # print("word_dict：")
     print(word_dict)
     now = datetime.now()
     now_time = now.strftime('%Y-%m-%d %H:%M:%S')

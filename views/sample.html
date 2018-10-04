@@ -26,7 +26,7 @@
     <div id="display-mode">
         <div id="header">
            <h2 class="title-word">ChatBot</h2>
-           <h2 class="minus-close-button"><i class="fas fa-minus" style="cursor: pointer;" onclick="hyouji1(1)"></i></h2>
+           <i class="fas fa-minus minus-close-button" style="cursor: pointer;" onclick="hyouji1(1)"></i>
          </div>
 
         <div id="main">
@@ -67,7 +67,7 @@
             // ユーザー側のdiv
               var talkContent = $("<div></div>", {
                   "class": "talk alert alert-success pull-left col-sm-6",
-                  "style": "word-wrap: break-word",
+                  "style": "word-wrap: break-word;",
                   "text" : "何か文字を入力してね",
                 })
               // 内側のDIVを外側のDIVに追加
@@ -86,7 +86,7 @@
            // ユーザー側のdiv
              var talkContent = $("<div></div>", {
                  "class": "talk alert alert-info pull-right col-sm-6",
-                 "style": "word-wrap: break-word",
+                 "style": "word-wrap: break-word; margin:0px;",
                  "title":"user",
                  "text" : input,
                })
@@ -125,7 +125,7 @@
             // bot側のdiv
              var talkData = $("<div></div>", {
                "class": "talk alert alert-success pull-left col-sm-6",
-               "style": "word-wrap: break-word",
+               "style": "word-wrap:break-word",
                "title": "bot",
                "text" : newData,
              })
