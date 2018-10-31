@@ -72,6 +72,7 @@ def talk_api():
 
     for nouns_content in word_dict["nouns"]:
         print(nouns_content)
+        print("ここ")
         if nouns_content in greeting_list:
             new_data = greet()
         elif nouns_content in Hayashi_list:
@@ -121,14 +122,10 @@ def greet():
 def parse(string):
 
     #'-Ochasen'はChaSen互換形式
-
-
     #-Ochasen-に変更
     mecab = MeCab.Tagger("-Ochasen")
-
     #str型じゃないと動作がおかしくなるので、str型に変換
     node = mecab.parseToNode(string)
-
 
     # 単語
     words = []

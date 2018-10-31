@@ -94,7 +94,7 @@
              rowDiv.append(talkContent);
              chatArea.append(rowDiv);
            getToData(input);
-           clr()
+           clr(input);
          });
 
          function getToData(input){
@@ -143,9 +143,9 @@
          }
 
          // 送信後はchat_wordを開放する
-         function clr(){
+         function clr(input){
            document.submit_text.chat_word.value="";
-           console.log("送信しました。");
+           console.log("'" + input + "'を送信しました。");
          }
      </script>
   </body>
