@@ -1,14 +1,16 @@
 # coding:utf-8
+
+"""
+ひとまず動くコードとして、代替しよう…
+"""
+
 import json
 import csv
 import os
-import MeCab
 import codecs
 import pandas as pd
 from datetime import datetime
 from bottle import route, run, template, request, response, redirect, static_file
-
-
 
 
 
@@ -47,52 +49,42 @@ def talk_api():
     with codecs.open("reply_word.csv",mode ="r", encoding= "Shift-JIS",errors="ignore") as file:
         reply_word = pd.read_csv(file)
     content = request.forms.getunicode("chat_word")
-    print(content)
-
-    #クエリの内容を形態素解析する。
-    word_dict=parse(content)
-    # print(word_dict["all"])
-    # print("word_dict：")
-    print(word_dict)
     now = datetime.now()
     now_time = now.strftime('%Y-%m-%d %H:%M:%S')
     check = now.second
     #reply_word:1,対応しているもののみ
-    greeting_list = ["おはよう","こんにちは","こんにちわ","HI","こんばんは","こんばんわ"]
+    greeting_list = ["おはよう","こんにちは","こんにちわ","Hi","hi","こんばんは","こんばんわ"]
     #reply_word:4
-    Hayashi_list= ["早矢仕","早矢仕晃章","てるさん","HAYASHI","TERU"]
+    Hayashi_list= ["早矢仕","早矢仕晃章","てるさん","Hayashi","teru"]
     #reply_word:4
-    Ohsawa_list = ["大澤","大澤先生","大澤幸生","OHSAWA"]
+    Ohsawa_list = ["大澤","大澤先生","大澤幸生","Ohsawa"]
     #reply_word:4
     Free_word = ["暇つぶし"]
     #reply_word:3
-    Ganzaa_list = ["岩佐","岩佐太路","IWASA","GANZAA"]
+    Ganzaa_list = ["岩佐","岩佐太路","Iwasa","ganzaa"]
     #reply_word:3
-    Semple_list = ["仙田","仙田雅大","SENDA","SEMPLE"]
+    Semple_list = ["仙田","仙田雅大","Senda","Semple"]
 
-    for nouns_content in word_dict["nouns"]:
-        print(nouns_content)
-        print("ここ")
-        if nouns_content in greeting_list:
-            new_data = greet()
-        elif nouns_content in Hayashi_list:
-            four_check = check % 4
-            new_data = reply_word["Hayashi"][four_check]
-        elif nouns_content in Ohsawa_list:
-            four_check = check % 4
-            new_data = reply_word["Ohsawa"][four_check]
-        elif nouns_content in Free_word:
-            four_check = check % 4
-            new_data = reply_word["Free"][four_check]
-        elif nouns_content in Ganzaa_list:
-            three_check = check % 3
-            new_data = reply_word["Ganzaa"][three_check]
-        elif nouns_content in Semple_list:
-            three_check = check % 3
-            new_data = reply_word["Semple"][three_check]
-        else:
-            three_check = check % 3
-            new_data = reply_word["No_match"][three_check]
+    if content in greeting_list:
+        new_data = greet()
+    elif content in Hayashi_list:
+        four_check = check % 4
+        new_data = reply_word["Hayashi"][four_check]
+    elif content in Ohsawa_list:
+        four_check = check % 4
+        new_data = reply_word["Ohsawa"][four_check]
+    elif content in Free_word:
+        four_check = check % 4
+        new_data = reply_word["Free"][four_check]
+    elif content in Ganzaa_list:
+        three_check = check % 3
+        new_data = reply_word["Ganzaa"][three_check]
+    elif content in Semple_list:
+        three_check = check % 3
+        new_data = reply_word["Semple"][three_check]
+    else:
+        three_check = check % 3
+        new_data = reply_word["No_match"][three_check]
 
     save_talk(now_time, content, new_data)
     return json.dumps({
@@ -118,41 +110,6 @@ def greet():
         return reply_word["Greeting"][3]
     else:
         return reply_word["Greeting"][4]
-
-def parse(string):
-
-    #'-Ochasen'はChaSen互換形式
-    #-Ochasen-に変更
-    mecab = MeCab.Tagger("-Ochasen")
-    #str型じゃないと動作がおかしくなるので、str型に変換
-    node = mecab.parseToNode(string)
-
-    # 単語
-    words = []
-    # 名詞
-    nouns = []
-    # 動詞
-    verbs = []
-    # 形容詞
-    adjs = []
-    while node:
-        pos = node.feature.split(",")[0]
-        word = node.surface.upper()
-        if pos == "名詞":
-            nouns.append(word)
-        elif pos == "動詞":
-            verbs.append(word)
-        elif pos == "形容詞":
-            adjs.append(word)
-        words.append(word)
-        node = node.next
-    parsed_words_dict ={
-        "all":words[1:-1],#最初と最後には空文字列が入るので除去
-        "nouns":nouns,
-        "verbs":verbs,
-        "adjs":adjs
-    }
-    return parsed_words_dict
 
 def save_talk(talk_time, content, new_data):
     """
